@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  backend:
+    container_name: nlp_security_backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend/app:/app/app      
+      - ./backend/tests:/app/tests
+    ports:
+      - "8080:8080"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      # LLM provider: azure, github (leave empty for rule-based only)
+      - LLM_PROVIDER=${LLM_PROVIDER:-}
+      - LLM_TIMEOUT=${LLM_TIMEOUT:-10}
+      # Azure OpenAI
+      - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT:-}
+      - AZURE_OPENAI_DEPLOYMENT=${AZURE_OPENAI_DEPLOYMENT:-}
+      - AZURE_OPENAI_API_KEY=${AZURE_OPENAI_API_KEY:-}
+      # GitHub Models
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - GITHUB_MODEL=${GITHUB_MODEL:-openai/gpt-4o}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/healthz || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+
+  frontend:
+    container_name: nlp_security_frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3005:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped

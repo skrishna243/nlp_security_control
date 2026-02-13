@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/saikrishna/code/test_code/ai_projects/**)",
+      "Bash(python -m venv:*)",
+      "Bash(.venv/bin/pip install:*)",
+      "Bash(.venv/bin/pytest:*)",
+      "Bash(.venv/bin/python:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)"
+    ]
+  }
+}
