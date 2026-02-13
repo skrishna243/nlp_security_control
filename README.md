@@ -1,4 +1,4 @@
-# NL Security Control
+# Natural Language Security Control
 
 A Dockerized natural language security system controller. Type commands in plain English — the system interprets them and executes the appropriate security actions.
 
